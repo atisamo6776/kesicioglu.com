@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hece Sayma Programı</title>
+    <meta name="description" content="Türkçe metinler için satır satır hece sayıcı">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <a href="../../index.php" class="navbar-logo">
+                Kesicioğlu<span class="dot">.</span>
+            </a>
+            <a href="../../index.php" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Ana Sayfa
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <div class="max-width-container">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="main-title">📝 Hece Sayma Programı</h1>
+                <p class="subtitle">Türkçe metinlerinizi satır satır yazın, her satırdaki hece sayısını anında görün</p>
+            </header>
+
+            <!-- Editor Container -->
+            <div class="editor-wrapper">
+                <!-- Tag Sidebar -->
+                <aside class="tag-sidebar" id="tagSidebar">
+                    <div class="sidebar-content">
+                        <h2 class="sidebar-title">🎵 Song Tags</h2>
+                        <div class="tags-container" id="tagsContainer"></div>
+                    </div>
+                </aside>
+
+                <!-- Main Editor -->
+                <div class="editor-container">
+                    <!-- Stats Bar -->
+                    <div class="stats-bar">
+                        <div class="stats-left">
+                            <div class="stat-box">
+                                <span class="stat-label">Toplam Hece</span>
+                                <div class="stat-value" id="totalSyllables">0</div>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Satır Sayısı</span>
+                                <div class="stat-value">
+                                    <span id="nonEmptyLines">0</span>/<span id="totalLines">1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stats-right">
+                            <button class="action-btn" id="copyBtn" title="Tüm metni kopyala">
+                                <i class="fas fa-copy"></i> Kopyala
+                            </button>
+                            <button class="action-btn" id="clearBtn" title="Tümünü temizle">
+                                <i class="fas fa-redo"></i> Temizle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Copy Message -->
+                    <div class="copy-message" id="copyMessage">
+                        ✓ Metin panoya kopyalandı!
+                    </div>
+
+                    <!-- Editor Area -->
+                    <div class="editor-area">
+                        <div class="editor-flex">
+                            <!-- Line Numbers -->
+                            <div class="line-numbers" id="lineNumbers"></div>
+
+                            <!-- Text Editor -->
+                            <div class="editor-main">
+                                <!-- Zebra Background -->
+                                <div class="zebra-background" id="zebraBackground"></div>
+                                <!-- Textarea -->
+                                <textarea
+                                    id="textEditor"
+                                    class="text-editor"
+                                    placeholder="Metninizi buraya yazın..."
+                                    autofocus
+                                    spellcheck="false"
+                                ></textarea>
+                            </div>
+
+                            <!-- Syllable Counter -->
+                            <div class="syllable-counter" id="syllableCounter"></div>
+                        </div>
+                    </div>
+
+                    <!-- Helper Text -->
+                    <div class="helper-text">
+                        <span class="font-semibold">💡 İpucu:</span> Sol menüden tag seçin, metin editörüne otomatik eklensin!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>
+                    💡 <strong>İpucu:</strong> Enter ile yeni satır, Backspace ile boş satır silme, ↑↓ ile satırlar arası gezinme
+                </p>
+            </footer>
+        </div>
+    </main>
+
+    <!-- Bottom Footer -->
+    <footer class="bottom-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <a href="../../index.php" class="footer-logo">
+                    Kesicioğlu<span class="dot">.</span>
+                </a>
+                <p class="footer-text">Bilgisayar Mühendisi • Web Developer</p>
+            </div>
+            <div class="footer-right">
+                <a href="../../index.php" class="footer-link">
+                    <i class="fas fa-home"></i> Ana Sayfa
+                </a>
+                <a href="../../index.php#projects" class="footer-link">
+                    <i class="fas fa-folder"></i> Projeler
+                </a>
+                <a href="../../index.php#contact" class="footer-link">
+                    <i class="fas fa-envelope"></i> İletişim
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Kesicioğlu. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
