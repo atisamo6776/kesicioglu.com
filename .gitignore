@@ -2,12 +2,6 @@
 uploads/*
 !uploads/.gitkeep
 
-# Web apps
-apps/*
-!apps/.gitkeep
-!apps/hece-sayma/
-!apps/hece-sayma/**
-
 # Config (contains sensitive data)
 config.php
 
