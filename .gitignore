@@ -1,0 +1,22 @@
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# Web apps
+apps/*
+!apps/.gitkeep
+
+# Config (contains sensitive data)
+config.php
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*

@@ -1,0 +1,135 @@
+========================================
+KESİCİOĞLU PORTFOLIO SİTESİ - KURULUM
+========================================
+
+🎉 HIZLI BAŞLANGIÇ REHBERİ
+
+1️⃣ VERİTABANI OLUŞTUR
+   - cPanel > phpMyAdmin'e git
+   - Yeni veritabanı oluştur (örn: kesicioglu_db)
+   - database.sql dosyasını içe aktar (Import)
+
+2️⃣ CONFIG.PHP'Yİ DÜZENLE
+   - config.php dosyasını aç
+   - Veritabanı bilgilerini gir:
+     * DB_NAME: Veritabanı adın
+     * DB_USER: Veritabanı kullanıcı adın
+     * DB_PASS: Veritabanı şifren
+     * SITE_URL: Domain adresin
+
+3️⃣ KLASÖR İZİNLERİ
+   - uploads/ klasörüne 777 izni ver
+   - apps/ klasörüne 777 izni ver
+
+4️⃣ ADMİN PANELİNE GİRİŞ
+   - Tarayıcıda: https://siteniz.com/admin/login.php
+   - Kullanıcı Adı: admin
+   - Şifre: admin123
+
+5️⃣ ŞİFRENİ DEĞİŞTİR
+   ⚠️ ÖNEMLİ: İlk girişten sonra mutlaka şifreni değiştir!
+
+========================================
+
+📋 DOSYA YAPISI
+
+kesicioglu.com/
+├── admin/              → Admin panel
+│   ├── login.php       → Giriş sayfası
+│   ├── index.php       → Dashboard
+│   ├── settings.php    → Site ayarları
+│   ├── social.php      → Sosyal medya
+│   ├── skills.php      → Yetenekler
+│   ├── projects.php    → Projeler
+│   ├── messages.php    → Mesajlar
+│   └── email-settings.php → E-posta ayarları
+├── api/                → API endpoints
+├── apps/               → Web app projeleri
+├── uploads/            → Yüklenen dosyalar
+├── config.php          → Veritabanı ayarları
+├── database.sql        → Veritabanı yapısı
+└── index.php           → Ana sayfa
+
+========================================
+
+🎨 ADMİN PANEL ÖZELLİKLERİ
+
+✅ Site Ayarları
+   - Başlıklar, renkler, iletişim bilgileri
+   - Hero section düzenleme
+   - Hakkımda metinleri
+   - İstatistikler (proje, deneyim, müşteri sayıları)
+
+✅ Sosyal Medya
+   - Instagram, GitHub, LinkedIn vb. ekle
+   - İkonları özelleştir
+   - Sıralama yap
+
+✅ Yetenekler
+   - Yeni yetenek ekle
+   - İkon, başlık, açıklama düzenle
+   - Etiketler ekle
+
+✅ Projeler
+   - Blog tipi: Görsel + açıklama
+   - Web App tipi: ZIP yükle → otomatik kurulum
+   - Kategori ve etiket yönetimi
+
+✅ Mesajlar
+   - İletişim formundan gelen mesajları gör
+   - E-posta bildirimi al
+
+========================================
+
+📧 E-POSTA BİLDİRİMLERİ
+
+1. Admin Panel > E-posta Ayarları
+2. "E-posta Bildirimlerini Aç" işaretle
+3. Bildirim e-posta adresini gir
+4. Kaydet
+
+Artık her yeni mesajda e-posta alacaksın!
+
+========================================
+
+🚀 WEB APP YÜKLEME
+
+1. Admin Panel > Projeler > Yeni Proje Ekle
+2. Proje Tipi: "Web App" seç
+3. Proje bilgilerini doldur
+4. Web app dosyalarını ZIP olarak yükle
+5. Kaydet
+
+Proje otomatik olarak şuraya kurulur:
+→ https://siteniz.com/apps/proje-adi/
+
+========================================
+
+🔒 GÜVENLİK ÖNERİLERİ
+
+⚠️ Admin şifresini DEĞİŞTİR
+⚠️ SSL sertifikası KUR
+⚠️ Production'da error display'i KAPAT
+⚠️ Düzenli YEDEK al
+
+========================================
+
+❓ SORUN GİDERME
+
+Veritabanı bağlanamıyorsa:
+→ config.php bilgilerini kontrol et
+
+Dosya yüklenemiyor:
+→ uploads/ ve apps/ izinlerini 777 yap
+
+Admin paneline giremiyorum:
+→ URL'i kontrol et: /admin/login.php
+→ Tarayıcı önbelleğini temizle
+
+========================================
+
+📞 YARDIM
+
+Detaylı bilgi için README.md dosyasını oku!
+
+İyi çalışmalar! 🎉

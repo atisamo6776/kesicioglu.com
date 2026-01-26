@@ -1,0 +1,340 @@
+<?php
+require_once 'config.php';
+
+// Tüm ayarları çek
+$settings = [];
+$stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
+while ($row = $stmt->fetch()) {
+    $settings[$row['setting_key']] = $row['setting_value'];
+}
+
+// Sosyal medya linklerini çek
+$socialLinks = $pdo->query("SELECT * FROM social_links WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
+
+// Menü öğelerini çek
+$menuItems = $pdo->query("SELECT * FROM navigation_menu WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
+
+// Yetenekleri çek
+$skills = $pdo->query("SELECT * FROM skills WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
+
+// Projeleri çek
+$projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
+?>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bilgisayar Mühendisi - Portfolyo & Projeler">
+    <title><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?> - <?php echo $settings['site_subtitle'] ?? 'Bilgisayar Mühendisi'; ?></title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <?php if (!empty($settings['primary_color'])): ?>
+    <style>
+        :root {
+            --primary: <?php echo $settings['primary_color']; ?> !important;
+            --primary-dark: <?php echo $settings['primary_color']; ?> !important;
+            --secondary: <?php echo $settings['secondary_color']; ?> !important;
+            --accent: <?php echo $settings['accent_color']; ?> !important;
+            --gradient-primary: linear-gradient(135deg, <?php echo $settings['primary_color']; ?> 0%, <?php echo $settings['secondary_color']; ?> 100%) !important;
+            --gradient-secondary: linear-gradient(135deg, <?php echo $settings['accent_color']; ?> 0%, <?php echo $settings['secondary_color']; ?> 100%) !important;
+        }
+    </style>
+    <?php endif; ?>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="#" class="logo"><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?><span class="dot">.</span></a>
+                <ul class="nav-menu" id="nav-menu">
+                    <?php foreach ($menuItems as $item): ?>
+                    <li><a href="<?php echo htmlspecialchars($item['menu_link']); ?>" class="nav-link"><?php echo htmlspecialchars($item['menu_text']); ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+                <div class="nav-icons">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <?php echo nl2br(htmlspecialchars($settings['hero_title'] ?? 'Merhaba, Ben Kesicioğlu')); ?>
+                    </h1>
+                    <h2 class="hero-subtitle"><?php echo htmlspecialchars($settings['hero_subtitle'] ?? 'Bilgisayar Mühendisi'); ?></h2>
+                    <p class="hero-description">
+                        <?php echo nl2br(htmlspecialchars($settings['hero_description'] ?? '')); ?>
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn btn-primary">Projeleri Gör</a>
+                        <a href="#contact" class="btn btn-secondary">İletişime Geç</a>
+                    </div>
+                    <div class="social-links">
+                        <?php foreach ($socialLinks as $link): ?>
+                        <a href="<?php echo htmlspecialchars($link['url']); ?>" aria-label="<?php echo htmlspecialchars($link['platform']); ?>" target="_blank">
+                            <i class="<?php echo htmlspecialchars($link['icon']); ?>"></i>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-wrapper">
+                        <?php if (!empty($settings['hero_image'])): ?>
+                        <img src="<?php echo $settings['hero_image']; ?>" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 24px;">
+                        <?php else: ?>
+                        <div class="image-placeholder">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Kim Olduğumu Keşfet</span>
+                <h2 class="section-title">Hakkımda</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p><?php echo nl2br(htmlspecialchars($settings['about_text_1'] ?? '')); ?></p>
+                    <p><?php echo nl2br(htmlspecialchars($settings['about_text_2'] ?? '')); ?></p>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <h3 class="stat-number" data-target="<?php echo $settings['stat_projects'] ?? 15; ?>">0</h3>
+                            <p class="stat-label">Tamamlanan Proje</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 class="stat-number" data-target="<?php echo $settings['stat_experience'] ?? 3; ?>">0</h3>
+                            <p class="stat-label">Yıllık Deneyim</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 class="stat-number" data-target="<?php echo $settings['stat_clients'] ?? 20; ?>">0</h3>
+                            <p class="stat-label">Mutlu Müşteri</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Uzmanlık Alanlarım</span>
+                <h2 class="section-title">Yetenekler</h2>
+            </div>
+            <div class="skills-grid">
+                <?php foreach ($skills as $skill): ?>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="<?php echo htmlspecialchars($skill['icon']); ?>"></i>
+                    </div>
+                    <h3><?php echo htmlspecialchars($skill['title']); ?></h3>
+                    <p><?php echo nl2br(htmlspecialchars($skill['description'])); ?></p>
+                    <div class="skill-tags">
+                        <?php 
+                        $tags = explode(',', $skill['tags']);
+                        foreach ($tags as $tag): 
+                            if (trim($tag)):
+                        ?>
+                        <span class="tag"><?php echo htmlspecialchars(trim($tag)); ?></span>
+                        <?php 
+                            endif;
+                        endforeach; 
+                        ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Çalışmalarım</span>
+                <h2 class="section-title">Projeler</h2>
+            </div>
+            <div class="projects-filter">
+                <button class="filter-btn active" data-filter="all">Tümü</button>
+                <button class="filter-btn" data-filter="web">Web</button>
+                <button class="filter-btn" data-filter="mobile">Mobil</button>
+                <button class="filter-btn" data-filter="design">Tasarım</button>
+            </div>
+            <div class="projects-grid" id="projects-grid">
+                <?php foreach ($projects as $project): ?>
+                <div class="project-card" data-category="<?php echo htmlspecialchars($project['category'] ?? 'web'); ?>">
+                    <div class="project-image">
+                        <?php if (!empty($project['image'])): ?>
+                        <img src="<?php echo htmlspecialchars($project['image']); ?>" alt="<?php echo htmlspecialchars($project['title']); ?>">
+                        <?php else: ?>
+                        <img src="https://via.placeholder.com/600x400/667eea/ffffff?text=<?php echo urlencode($project['title']); ?>" alt="<?php echo htmlspecialchars($project['title']); ?>">
+                        <?php endif; ?>
+                        <div class="project-overlay">
+                            <?php if ($project['project_type'] === 'webapp'): ?>
+                                <?php if (!empty($project['demo_url'])): ?>
+                                <!-- Harici URL -->
+                                <a href="<?php echo htmlspecialchars($project['demo_url']); ?>" target="_blank" class="project-link" title="Harici Siteyi Aç"><i class="fas fa-external-link-alt"></i></a>
+                                <?php elseif (!empty($project['folder_path'])): ?>
+                                <!-- Lokal Web App -->
+                                <a href="<?php echo htmlspecialchars($project['folder_path']); ?>/" target="_blank" class="project-link" title="Web App'i Aç"><i class="fas fa-rocket"></i></a>
+                                <?php endif; ?>
+                            <?php elseif (!empty($project['demo_url'])): ?>
+                            <a href="<?php echo htmlspecialchars($project['demo_url']); ?>" target="_blank" class="project-link"><i class="fas fa-eye"></i></a>
+                            <?php endif; ?>
+                            <?php if (!empty($project['github_url'])): ?>
+                            <a href="<?php echo htmlspecialchars($project['github_url']); ?>" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <?php 
+                            $tags = explode(',', $project['tags']);
+                            foreach ($tags as $tag): 
+                                if (trim($tag)):
+                            ?>
+                            <span class="tag"><?php echo htmlspecialchars(trim($tag)); ?></span>
+                            <?php 
+                                endif;
+                            endforeach; 
+                            ?>
+                        </div>
+                        <h3 class="project-title"><?php echo htmlspecialchars($project['title']); ?></h3>
+                        <p class="project-description">
+                            <?php echo nl2br(htmlspecialchars($project['description'])); ?>
+                        </p>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Benimle İletişime Geç</span>
+                <h2 class="section-title">İletişim</h2>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Birlikte Çalışalım</h3>
+                    <p>
+                        Yeni projeler ve iş birliği fırsatları için her zaman açığım. 
+                        Aklınızda bir proje mi var? Hadi konuşalım!
+                    </p>
+                    <div class="contact-items">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <p><?php echo htmlspecialchars($settings['contact_email'] ?? 'info@kesicioglu.com'); ?></p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Telefon</h4>
+                                <p><?php echo htmlspecialchars($settings['contact_phone'] ?? '+90 555 555 55 55'); ?></p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Konum</h4>
+                                <p><?php echo htmlspecialchars($settings['contact_location'] ?? 'İstanbul, Türkiye'); ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Adınız" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email Adresiniz" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="subject" placeholder="Konu" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" rows="5" placeholder="Mesajınız" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span>Mesaj Gönder</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <a href="#" class="footer-logo"><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?><span class="dot">.</span></a>
+                    <p><?php echo htmlspecialchars($settings['footer_text'] ?? 'Bilgisayar Mühendisi • Web Developer'); ?></p>
+                </div>
+                <div class="footer-links">
+                    <?php foreach ($menuItems as $item): ?>
+                    <a href="<?php echo htmlspecialchars($item['menu_link']); ?>"><?php echo htmlspecialchars($item['menu_text']); ?></a>
+                    <?php endforeach; ?>
+                </div>
+                <div class="footer-social">
+                    <?php foreach ($socialLinks as $link): ?>
+                    <a href="<?php echo htmlspecialchars($link['url']); ?>" aria-label="<?php echo htmlspecialchars($link['platform']); ?>" target="_blank">
+                        <i class="<?php echo htmlspecialchars($link['icon']); ?>"></i>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <?php echo date('Y'); ?> <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?>. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top" aria-label="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
