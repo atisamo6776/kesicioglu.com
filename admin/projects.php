@@ -449,7 +449,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fas fa-external-link-alt"></i> Harici URL
                             </a>
                             <?php elseif (!empty($project['folder_path'])): ?>
-                            <a href="../<?php echo $project['folder_path']; ?>/" target="_blank" style="color: #667eea;">
+                            <?php 
+                            $folderName = str_replace('apps/', '', $project['folder_path']);
+                            ?>
+                            <a href="../webapp-wrapper.php?project=<?php echo urlencode($folderName); ?>" target="_blank" style="color: #667eea;">
                                 <i class="fas fa-rocket"></i> Web App'i Görüntüle
                             </a>
                             <?php endif; ?>

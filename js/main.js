@@ -375,6 +375,12 @@ window.addEventListener('load', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.body.style.visibility = 'visible';
+    
+    // Form load time'ı set et (spam koruması için)
+    const formTimeInput = document.getElementById('form_time');
+    if (formTimeInput) {
+        formTimeInput.value = Math.floor(Date.now() / 1000);
+    }
 });
 
 console.log('🚀 Portfolio sitesi yüklendi!');

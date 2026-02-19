@@ -8,6 +8,54 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// ===================================
+// GÜVENLİK KATMANI 1: Rate Limiting
+// ===================================
+$userIP = getUserIP();
+$rateLimit = checkRateLimit($userIP);
+
+if (!$rateLimit['allowed']) {
+    echo json_encode([
+        'success' => false,
+        'message' => $rateLimit['message']
+    ]);
+    exit;
+}
+
+// ===================================
+// GÜVENLİK KATMANI 2: Honeypot Field
+// ===================================
+$honeypot = $_POST['website'] ?? '';
+if (!empty($honeypot)) {
+    // Bot tespit edildi - sessizce reddet
+    sleep(2); // Bot'u yanıltmak için gecikme
+    echo json_encode([
+        'success' => true,
+        'message' => 'Mesajınız başarıyla gönderildi!' // Fake success
+    ]);
+    
+    // IP'yi engelle
+    blockIP($userIP, 86400); // 24 saat engelle
+    exit;
+}
+
+// ===================================
+// GÜVENLİK KATMANI 3: Time Check
+// ===================================
+$formLoadTime = intval($_POST['form_time'] ?? 0);
+$currentTime = time();
+$timeDiff = $currentTime - $formLoadTime;
+
+if ($timeDiff < 3) {
+    // 3 saniyeden hızlı gönderim - muhtemelen bot
+    echo json_encode([
+        'success' => false,
+        'message' => 'Lütfen formu doldurduktan sonra gönderin.'
+    ]);
+    exit;
+}
+
+// Form verilerini al ve temizle
 $name = sanitize($_POST['name'] ?? '');
 $email = sanitize($_POST['email'] ?? '');
 $subject = sanitize($_POST['subject'] ?? '');

@@ -221,12 +221,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
         </form>
         
-        <div class="login-note">
-            <strong>Varsayılan Giriş Bilgileri:</strong><br>
-            Kullanıcı Adı: <strong>admin</strong><br>
-            Şifre: <strong>admin123</strong>
-        </div>
-        
         <div class="back-link">
             <a href="../index.php"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
         </div>

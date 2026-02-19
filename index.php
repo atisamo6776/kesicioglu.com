@@ -52,6 +52,7 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                     <?php foreach ($menuItems as $item): ?>
                     <li><a href="<?php echo htmlspecialchars($item['menu_link']); ?>" class="nav-link"><?php echo htmlspecialchars($item['menu_text']); ?></a></li>
                     <?php endforeach; ?>
+                    <li><a href="apps.php" class="nav-link">Web Apps</a></li>
                 </ul>
                 <div class="nav-icons">
                     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
@@ -202,8 +203,11 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                                 <!-- Harici URL -->
                                 <a href="<?php echo htmlspecialchars($project['demo_url']); ?>" target="_blank" class="project-link" title="Harici Siteyi Aç"><i class="fas fa-external-link-alt"></i></a>
                                 <?php elseif (!empty($project['folder_path'])): ?>
-                                <!-- Lokal Web App -->
-                                <a href="<?php echo htmlspecialchars($project['folder_path']); ?>/" target="_blank" class="project-link" title="Web App'i Aç"><i class="fas fa-rocket"></i></a>
+                                <!-- Lokal Web App - Wrapper ile aç -->
+                                <?php 
+                                $folderName = str_replace('apps/', '', $project['folder_path']);
+                                ?>
+                                <a href="webapp-wrapper.php?project=<?php echo urlencode($folderName); ?>" class="project-link" title="Web App'i Aç"><i class="fas fa-rocket"></i></a>
                                 <?php endif; ?>
                             <?php elseif (!empty($project['demo_url'])): ?>
                             <a href="<?php echo htmlspecialchars($project['demo_url']); ?>" target="_blank" class="project-link"><i class="fas fa-eye"></i></a>
@@ -282,6 +286,12 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                     </div>
                 </div>
                 <form class="contact-form" id="contact-form">
+                    <!-- Honeypot field (bots için gizli tuzak) -->
+                    <input type="text" name="website" id="website" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" autocomplete="off">
+                    
+                    <!-- Form load time (spam koruması) -->
+                    <input type="hidden" name="form_time" id="form_time" value="">
+                    
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Adınız" required>
                     </div>
@@ -315,6 +325,7 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                     <?php foreach ($menuItems as $item): ?>
                     <a href="<?php echo htmlspecialchars($item['menu_link']); ?>"><?php echo htmlspecialchars($item['menu_text']); ?></a>
                     <?php endforeach; ?>
+                    <a href="apps.php">Web Apps</a>
                 </div>
                 <div class="footer-social">
                     <?php foreach ($socialLinks as $link): ?>
