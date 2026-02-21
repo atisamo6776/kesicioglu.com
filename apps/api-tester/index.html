@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester - Jarvis App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-flask"></i> API Tester</h1>
+        <p>RESTful API istekleri gönderin ve yanıtları görün.</p>
+
+        <div class="api-form">
+            <div class="form-group">
+                <label for="method">Method:</label>
+                <select id="method" class="form-control">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+            </div>
+            <div class="form-group url-group">
+                <label for="url">URL:</label>
+                <input type="text" id="url" class="form-control" placeholder="https://api.example.com/data">
+                <button id="send-request" class="btn btn-primary">Gönder</button>
+            </div>
+            <div class="form-group">
+                <label for="headers">Headers (JSON):</label>
+                <textarea id="headers" class="form-control" rows="4" placeholder='{"Content-Type": "application/json"}'></textarea>
+            </div>
+            <div class="form-group">
+                <label for="body">Body (JSON for POST/PUT):</label>
+                <textarea id="body" class="form-control" rows="8" placeholder='{"key": "value"}'></textarea>
+            </div>
+        </div>
+
+        <div class="api-response">
+            <h2>Yanıt:</h2>
+            <div class="response-status" id="response-status"></div>
+            <pre><code id="response-data">Yanıt burada görünecek...</code></pre>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 900px;
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        h1 {
+            font-size: 2.2em;
+            display: flex;
+            align-items: center;
+        }
+        h1 .fas {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        p {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease-in-out;
+        }
+        .form-control:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .url-group {
+            display: flex;
+            gap: 10px;
+        }
+        .url-group input {
+            flex-grow: 1;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        .api-response {
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+        .response-status {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .response-status.success {
+            background-color: #e6ffe6;
+            color: #28a745;
+        }
+        .response-status.error {
+            background-color: #ffe6e6;
+            color: #dc3545;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: "Consolas", "Monaco", "Ubuntu Mono", "Droid Sans Mono", monospace;
+            font-size: 0.9em;
+        }
+        code {
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+    <script>
+        document.getElementById('send-request').addEventListener('click', async () => {
+            const method = document.getElementById('method').value;
+            const url = document.getElementById('url').value;
+            const headersText = document.getElementById('headers').value;
+            const bodyText = document.getElementById('body').value;
+            const responseDataElement = document.getElementById('response-data');
+            const responseStatusElement = document.getElementById('response-status');
+
+            responseDataElement.textContent = 'Yükleniyor...';
+            responseStatusElement.textContent = '';
+            responseStatusElement.className = 'response-status';
+
+            try {
+                let headers = {};
+                if (headersText) {
+                    headers = JSON.parse(headersText);
+                }
+
+                let options = {
+                    method: method,
+                    headers: headers,
+                };
+
+                if (method === 'POST' || method === 'PUT') {
+                    if (bodyText) {
+                        options.body = bodyText;
+                    }
+                }
+
+                const response = await fetch(url, options);
+                const data = await response.json(); // Attempt to parse as JSON
+
+                responseStatusElement.textContent = `Status: ${response.status} ${response.statusText}`;
+                if (response.ok) {
+                    responseStatusElement.classList.add('success');
+                } else {
+                    responseStatusElement.classList.add('error');
+                }
+                
+                responseDataElement.textContent = JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                responseStatusElement.textContent = 'Hata oluştu!';
+                responseStatusElement.classList.add('error');
+                responseDataElement.textContent = error.message;
+            }
+        });
+    </script>
+</body>
+</html>
