@@ -1,5 +1,8 @@
 <?php
 require_once '../config.php';
+require_once __DIR__ . '/../lib/security.php';
+
+app_require_csrf_post();
 $pageTitle = 'Mesajlar';
 
 $message = '';
@@ -7,6 +10,7 @@ $messageType = '';
 
 // Silme işlemi
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    app_require_csrf_get();
     $stmt = $pdo->prepare("DELETE FROM contact_messages WHERE id = ?");
     if ($stmt->execute([$_GET['id']])) {
         $message = 'Mesaj silindi!';
@@ -138,7 +142,7 @@ include 'includes/header.php';
                         <a href="mailto:<?php echo htmlspecialchars($msg['email']); ?>" class="btn btn-sm btn-primary" title="Yanıtla">
                             <i class="fas fa-reply"></i>
                         </a>
-                        <a href="?action=delete&id=<?php echo $msg['id']; ?>" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu mesajı silmek istediğinize emin misiniz?');">
+                        <a href="?action=delete&id=<?php echo $msg['id']; ?>&_csrf=<?php echo app_csrf_token(); ?>" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu mesajı silmek istediğinize emin misiniz?');">
                             <i class="fas fa-trash"></i>
                         </a>
                     </div>

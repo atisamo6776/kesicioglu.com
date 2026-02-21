@@ -25,8 +25,41 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bilgisayar Mühendisi - Portfolyo & Projeler">
-    <title><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?> - <?php echo $settings['site_subtitle'] ?? 'Bilgisayar Mühendisi'; ?></title>
+    <?php
+        $siteTitle = $settings['site_title'] ?? 'Kesicioğlu';
+        $siteSubtitle = $settings['site_subtitle'] ?? 'Bilgisayar Mühendisi';
+        $fullTitle = $siteTitle . ' - ' . $siteSubtitle;
+        $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+        $canonical = $siteUrl ? ($siteUrl . '/') : '';
+        $ogImage = !empty($settings['hero_image']) ? ($siteUrl ? $siteUrl . '/' . ltrim($settings['hero_image'], '/') : $settings['hero_image']) : '';
+        $metaDesc = $settings['hero_description'] ?? 'Bilgisayar Mühendisi - Portfolyo & Projeler';
+    ?>
+    <meta name="description" content="<?php echo htmlspecialchars($metaDesc); ?>">
+    <title><?php echo htmlspecialchars($fullTitle); ?></title>
+    <?php if ($canonical): ?>
+    <link rel="canonical" href="<?php echo htmlspecialchars($canonical); ?>">
+    <?php endif; ?>
+
+    <!-- OpenGraph / Twitter -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?php echo htmlspecialchars($fullTitle); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($metaDesc); ?>">
+    <?php if ($canonical): ?><meta property="og:url" content="<?php echo htmlspecialchars($canonical); ?>"><?php endif; ?>
+    <?php if ($ogImage): ?><meta property="og:image" content="<?php echo htmlspecialchars($ogImage); ?>"><?php endif; ?>
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($fullTitle); ?>">
+    <meta name="twitter:description" content="<?php echo htmlspecialchars($metaDesc); ?>">
+    <?php if ($ogImage): ?><meta name="twitter:image" content="<?php echo htmlspecialchars($ogImage); ?>"><?php endif; ?>
+
+    <!-- JSON-LD (Person) -->
+    <script type="application/ld+json"><?php echo json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'Person',
+        'name' => $siteTitle,
+        'jobTitle' => $siteSubtitle,
+        'url' => $canonical ?: null,
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <?php if (!empty($settings['primary_color'])): ?>

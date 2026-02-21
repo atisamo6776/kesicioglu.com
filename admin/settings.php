@@ -1,5 +1,8 @@
 <?php
 require_once '../config.php';
+require_once __DIR__ . '/../lib/security.php';
+
+app_require_csrf_post();
 $pageTitle = 'Site Ayarları';
 
 $message = '';
@@ -18,12 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES['hero_image']) && $_FILES['hero_image']['error'] === 0) {
             $uploadDir = '../uploads/';
             if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+                app_ensure_dir($uploadDir, 0755);
             }
-            
-            $fileName = time() . '_' . basename($_FILES['hero_image']['name']);
+
+            $origName = $_FILES['hero_image']['name'] ?? '';
+            $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+            if (!app_is_allowed_image_ext($ext)) {
+                throw new RuntimeException('Geçersiz görsel formatı.');
+            }
+
+            $fileName = time() . '_' . app_safe_filename($origName);
             $targetPath = $uploadDir . $fileName;
-            
+
             if (move_uploaded_file($_FILES['hero_image']['tmp_name'], $targetPath)) {
                 updateSetting('hero_image', 'uploads/' . $fileName);
             }
@@ -60,6 +69,7 @@ include 'includes/header.php';
 <?php endif; ?>
 
 <form method="POST" enctype="multipart/form-data">
+    <?php echo app_csrf_field(); ?>
     <!-- Hero Section -->
     <div class="dashboard-card" style="margin-bottom: 24px;">
         <div class="card-header">

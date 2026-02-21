@@ -1,5 +1,8 @@
 <?php
 require_once '../config.php';
+require_once __DIR__ . '/../lib/security.php';
+
+app_require_csrf_post();
 $pageTitle = 'E-posta Ayarları';
 
 $message = '';
@@ -44,6 +47,7 @@ include 'includes/header.php';
     </div>
     <div class="card-body">
         <form method="POST">
+            <?php echo app_csrf_field(); ?>
             <div class="form-group">
                 <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 16px; background: var(--bg-tertiary); border-radius: 12px;">
                     <input type="checkbox" name="email_notifications" <?php echo $emailNotifications == '1' ? 'checked' : ''; ?> style="width: 20px; height: 20px;">
