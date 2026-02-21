@@ -1,5 +1,8 @@
 <?php
 require_once '../config.php';
+require_once __DIR__ . '/../lib/security.php';
+
+app_require_csrf_post();
 $pageTitle = 'Sosyal Medya Yönetimi';
 
 $message = '';
@@ -7,6 +10,7 @@ $messageType = '';
 
 // Silme işlemi
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    app_require_csrf_get();
     $stmt = $pdo->prepare("DELETE FROM social_links WHERE id = ?");
     if ($stmt->execute([$_GET['id']])) {
         $message = 'Sosyal medya hesabı silindi!';
@@ -16,6 +20,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
 
 // Durum değiştirme
 if (isset($_GET['action']) && $_GET['action'] === 'toggle' && isset($_GET['id'])) {
+    app_require_csrf_get();
     $stmt = $pdo->prepare("UPDATE social_links SET is_active = NOT is_active WHERE id = ?");
     if ($stmt->execute([$_GET['id']])) {
         $message = 'Durum güncellendi!';
@@ -79,6 +84,7 @@ include 'includes/header.php';
         </div>
         <div class="card-body">
             <form method="POST">
+                <?php echo app_csrf_field(); ?>
                 <?php if ($editData): ?>
                 <input type="hidden" name="id" value="<?php echo $editData['id']; ?>">
                 <?php endif; ?>
@@ -178,10 +184,10 @@ include 'includes/header.php';
                                     <a href="?action=edit&id=<?php echo $link['id']; ?>" class="btn btn-sm btn-outline" title="Düzenle">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="?action=toggle&id=<?php echo $link['id']; ?>" class="btn btn-sm btn-outline" title="Durumu Değiştir">
+                                    <a href="?action=toggle&id=<?php echo $link['id']; ?>&_csrf=<?php echo app_csrf_token(); ?>" class="btn btn-sm btn-outline" title="Durumu Değiştir">
                                         <i class="fas fa-power-off"></i>
                                     </a>
-                                    <a href="?action=delete&id=<?php echo $link['id']; ?>" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu sosyal medya hesabını silmek istediğinize emin misiniz?');">
+                                    <a href="?action=delete&id=<?php echo $link['id']; ?>&_csrf=<?php echo app_csrf_token(); ?>" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu sosyal medya hesabını silmek istediğinize emin misiniz?');">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>

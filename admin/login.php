@@ -1,5 +1,8 @@
 <?php
 require_once '../config.php';
+require_once __DIR__ . '/../lib/security.php';
+
+app_require_csrf_post();
 
 // Zaten giriş yapılmışsa dashboard'a yönlendir
 if (isLoggedIn()) {
@@ -11,19 +14,26 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = sanitize($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    
-    if ($username && $password) {
+
+    $rateKey = app_rate_limit_key('admin_login');
+    if (!app_rate_limit_ok($rateKey, 5, 10 * 60)) {
+        $error = 'Çok fazla deneme yaptın. Lütfen 10 dakika sonra tekrar dene.';
+    } elseif ($username && $password) {
         try {
             $stmt = $pdo->prepare("SELECT * FROM admin_users WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch();
-            
+
             if ($user && password_verify($password, $user['password'])) {
+                // successful login: reset rate limit bucket
+                $_SESSION['_rate'][$rateKey] = [];
+
                 $_SESSION['admin_id'] = $user['id'];
                 $_SESSION['admin_username'] = $user['username'];
                 $_SESSION['admin_email'] = $user['email'];
                 redirect('index.php');
             } else {
+                app_rate_limit_hit($rateKey);
                 $error = 'Kullanıcı adı veya şifre hatalı!';
             }
         } catch (PDOException $e) {
@@ -200,6 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
         
         <form method="POST" action="">
+            <?php echo app_csrf_field(); ?>
             <div class="form-group">
                 <label>Kullanıcı Adı</label>
                 <div class="input-group">

@@ -62,7 +62,10 @@ public_html/
 
 ### 3. Veritabanı Bağlantısını Ayarla
 
-`config.php` dosyasını düzenle:
+`config.php` dosyasını oluştur/düzenle:
+
+- `config.example.php` dosyasını **kopyala**: `config.php`
+- Sonra `config.php` içindeki DB bilgilerini doldur.
 
 ```php
 define('DB_HOST', 'localhost');
@@ -77,8 +80,8 @@ define('SITE_URL', 'https://kesicioglu.com'); // Domain adresin
 Aşağıdaki klasörlere yazma izni ver (777):
 
 ```bash
-chmod 777 uploads/
-chmod 777 apps/
+chmod 755 uploads/
+chmod 755 apps/
 ```
 
 cPanel File Manager'dan sağ tıklayıp "Change Permissions" > 777 seç.

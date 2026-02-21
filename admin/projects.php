@@ -1,5 +1,8 @@
 <?php
 require_once '../config.php';
+require_once __DIR__ . '/../lib/security.php';
+
+app_require_csrf_post();
 $pageTitle = 'Projeler Yönetimi';
 
 $message = '';
@@ -7,6 +10,7 @@ $messageType = '';
 
 // Silme işlemi
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    app_require_csrf_get();
     $stmt = $pdo->prepare("SELECT * FROM projects WHERE id = ?");
     $stmt->execute([$_GET['id']]);
     $project = $stmt->fetch();
@@ -35,6 +39,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
 
 // Durum değiştirme
 if (isset($_GET['action']) && $_GET['action'] === 'toggle' && isset($_GET['id'])) {
+    app_require_csrf_get();
     $stmt = $pdo->prepare("UPDATE projects SET is_active = NOT is_active WHERE id = ?");
     if ($stmt->execute([$_GET['id']])) {
         $message = 'Durum güncellendi!';
@@ -62,10 +67,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_project'])) {
         if (isset($_FILES['project_image']) && $_FILES['project_image']['error'] === 0) {
             $uploadDir = '../uploads/projects/';
             if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+                app_ensure_dir($uploadDir, 0755);
             }
-            
-            $fileName = time() . '_' . sanitize(basename($_FILES['project_image']['name']));
+
+            $origName = $_FILES['project_image']['name'] ?? '';
+            $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+            if (!app_is_allowed_image_ext($ext)) {
+                throw new RuntimeException('Geçersiz görsel formatı.');
+            }
+
+            $fileName = time() . '_' . app_safe_filename($origName);
             $targetPath = $uploadDir . $fileName;
             
             if (move_uploaded_file($_FILES['project_image']['tmp_name'], $targetPath)) {
@@ -90,9 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_project'])) {
             if (isset($_FILES['webapp_files']) && $_FILES['webapp_files']['error'] === 0 && !empty($folder_name)) {
                 $appsDir = '../apps/';
                 if (!file_exists($appsDir)) {
-                    mkdir($appsDir, 0777, true);
+                    app_ensure_dir($appsDir, 0755);
                 }
-                
+
                 $projectDir = $appsDir . $folder_name . '/';
                 
                 // Klasör varsa sil ve yeniden oluştur (güncelleme için)
@@ -100,15 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_project'])) {
                     deleteDirectory($projectDir);
                 }
                 
-                mkdir($projectDir, 0777, true);
-                
-                // ZIP dosyasını aç
-                $zip = new ZipArchive;
-                if ($zip->open($_FILES['webapp_files']['tmp_name']) === TRUE) {
-                    $zip->extractTo($projectDir);
-                    $zip->close();
-                    $folder_path = 'apps/' . $folder_name;
-                }
+                app_ensure_dir($projectDir, 0755);
+
+                // ZIP dosyasını güvenli şekilde aç
+                app_extract_zip_safely($_FILES['webapp_files']['tmp_name'], $projectDir);
+                $folder_path = 'apps/' . $folder_name;
             } elseif (!empty($folder_name) && isset($_POST['id'])) {
                 // Güncelleme ama ZIP yok - mevcut folder_path'i koru
                 $folder_path = 'apps/' . $folder_name;
@@ -205,6 +212,7 @@ include 'includes/header.php';
     </div>
     <div class="card-body">
         <form method="POST" enctype="multipart/form-data">
+            <?php echo app_csrf_field(); ?>
             <?php if ($editData): ?>
             <input type="hidden" name="id" value="<?php echo $editData['id']; ?>">
             <?php endif; ?>
@@ -412,10 +420,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             <a href="?action=edit&id=<?php echo $project['id']; ?>" class="btn btn-sm btn-outline" title="Düzenle">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="?action=toggle&id=<?php echo $project['id']; ?>" class="btn btn-sm btn-outline" title="Durumu Değiştir">
+                            <a href="?action=toggle&id=<?php echo $project['id']; ?>&_csrf=<?php echo app_csrf_token(); ?>" class="btn btn-sm btn-outline" title="Durumu Değiştir">
                                 <i class="fas fa-power-off"></i>
                             </a>
-                            <a href="?action=delete&id=<?php echo $project['id']; ?>" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu projeyi silmek istediğinize emin misiniz?<?php echo $project['project_type'] === 'webapp' ? ' Proje dosyaları da silinecek!' : ''; ?>');">
+                            <a href="?action=delete&id=<?php echo $project['id']; ?>&_csrf=<?php echo app_csrf_token(); ?>" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu projeyi silmek istediğinize emin misiniz?<?php echo $project['project_type'] === 'webapp' ? ' Proje dosyaları da silinecek!' : ''; ?>');">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </div>
