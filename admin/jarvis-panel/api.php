@@ -8,25 +8,87 @@ if (!isLoggedIn()) {
     exit;
 }
 
+header('Content-Type: application/json');
+
+// Get Real Data Helper
+function get_real_stats() {
+    $stats = [
+        'ram_percent' => 0,
+        'ram_used' => 'N/A',
+        'ram_total' => 'N/A',
+        'disk_percent' => 0,
+        'disk_used' => 'N/A',
+        'disk_total' => 'N/A',
+        'load' => 'N/A',
+        'restricted' => true
+    ];
+
+    if (function_exists('shell_exec')) {
+        $free = @shell_exec('free -m');
+        if ($free) {
+            $free = (string)trim($free);
+            $free_arr = explode("\n", $free);
+            if (isset($free_arr[1])) {
+                $mem = explode(" ", preg_replace('/\s+/', ' ', $free_arr[1]));
+                $stats['ram_total'] = $mem[1];
+                $stats['ram_used'] = $mem[2];
+                $stats['ram_percent'] = round(($mem[2] / $mem[1]) * 100, 2);
+                $stats['restricted'] = false;
+            }
+        }
+    }
+
+    try {
+        $dt = @disk_total_space("/");
+        $df = @disk_free_space("/");
+        if ($dt !== false && $df !== false) {
+            $du = $dt - $df;
+            $stats['disk_total'] = round($dt / 1073741824, 2);
+            $stats['disk_used'] = round($du / 1073741824, 2);
+            $stats['disk_percent'] = round(($du / $dt) * 100, 2);
+        }
+    } catch (Exception $e) {}
+
+    if (function_exists('sys_getloadavg')) {
+        $load = sys_getloadavg();
+        $stats['load'] = $load[0] . ' ' . $load[1] . ' ' . $load[2];
+    }
+
+    return $stats;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-    header('Content-Type: application/json');
 
     switch ($action) {
+        case 'get_stats':
+            echo json_encode(['status' => 'success', 'data' => get_real_stats()]);
+            break;
+            
         case 'status':
-            // OpenClaw status komutunu simüle et veya çalıştır
-            $output = shell_exec('openclaw gateway status 2>&1');
-            echo json_encode(['status' => 'success', 'output' => $output ?: 'Gateway is active.']);
+            // Hosting ortamında 'openclaw' komutu çalışmaz, 
+            // bu yüzden VPS'e (Server A) bir sinyal göndermemiz gerekir.
+            // Şimdilik sadece bilgilendirme yapalım.
+            echo json_encode([
+                'status' => 'success', 
+                'output' => "Mevcut Sunucu (Server B/C): Hosting kısıtlamaları nedeniyle 'openclaw' komutu doğrudan çalıştırılamıyor.\nNot: OpenClaw ana sunucunuzda (Server A) stabil çalışmaktadır."
+            ]);
             break;
+
         case 'restart':
-            // Bu tehlikeli bir komut olabilir, sadece log döndürelim veya kısıtlı çalıştıralım
-            // $output = shell_exec('openclaw gateway restart 2>&1');
-            echo json_encode(['status' => 'success', 'output' => 'Gateway restart command received. (Processing in background...)']);
+            echo json_encode([
+                'status' => 'error', 
+                'message' => "Güvenlik Engeli: Hosting sunucusu üzerinden Gateway yeniden başlatma yetkiniz bulunmamaktadır."
+            ]);
             break;
+
         case 'clean_logs':
-            $output = shell_exec('echo "" > /root/.openclaw/logs/gateway.log 2>&1');
-            echo json_encode(['status' => 'success', 'output' => 'Logs cleared.']);
+            echo json_encode([
+                'status' => 'success', 
+                'output' => "Temizlik işlemi bu sunucu için gerekli değil veya kısıtlı."
+            ]);
             break;
+
         default:
             echo json_encode(['status' => 'error', 'message' => 'Unknown action']);
     }

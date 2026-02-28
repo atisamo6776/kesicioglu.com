@@ -127,6 +127,10 @@ include 'includes/header.php';
             <p class="text-slate-400 mt-2 font-medium">Sistem mimarisi analizi ve canlı veri akışı.</p>
         </div>
         <div class="flex items-center space-x-4 bg-slate-800/50 p-4 rounded-2xl border border-slate-700">
+            <button onclick="updateStats()" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 p-2 rounded-lg border border-cyan-500/30 transition-all">
+                <i class="fas fa-sync-alt" id="refresh-icon"></i>
+            </button>
+            <div class="h-10 w-px bg-slate-700 mx-2"></div>
             <div class="text-right">
                 <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Sistem Durumu</p>
                 <p class="text-sm font-semibold text-emerald-400 flex items-center justify-end">
@@ -146,7 +150,7 @@ include 'includes/header.php';
         <i class="fas fa-shield-alt text-2xl"></i>
         <div>
             <p class="font-bold">Kısıtlı Erişim (Shared Hosting)</p>
-            <p class="text-sm opacity-80"><code>shell_exec()</code> devre dışı. Gösterilen bazı veriler simülasyondur.</p>
+            <p class="text-sm opacity-80"><code>shell_exec()</code> devre dışı. Gerçek sunucu verileri (RAM/CPU) için VPS terminalini kullanın. Burada sadece izin verilen veriler gösterilir.</p>
         </div>
     </div>
     <?php endif; ?>
@@ -156,28 +160,28 @@ include 'includes/header.php';
         <div class="cyber-card rounded-2xl p-6 transition-all duration-300">
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">RAM KULLANIMI</p>
             <div class="flex items-baseline space-x-2">
-                <h3 class="text-3xl font-bold text-white"><?php echo $mem['percent']; ?>%</h3>
-                <p class="text-slate-500 text-sm"><?php echo $mem['used']; ?>/<?php echo $mem['total']; ?> MB</p>
+                <h3 class="text-3xl font-bold text-white" id="ram-val"><?php echo $mem['percent']; ?>%</h3>
+                <p class="text-slate-500 text-sm" id="ram-detail"><?php echo $mem['used']; ?>/<?php echo $mem['total']; ?> MB</p>
             </div>
             <div class="mt-4 h-2 bg-slate-900 rounded-full overflow-hidden">
-                <div class="h-full bg-cyan-500 rounded-full shadow-[0_0_10px_#22d3ee]" style="width: <?php echo $mem['percent']; ?>%"></div>
+                <div class="h-full bg-cyan-500 rounded-full shadow-[0_0_10px_#22d3ee] transition-all duration-500" id="ram-bar" style="width: <?php echo $mem['percent']; ?>%"></div>
             </div>
         </div>
 
         <div class="cyber-card rounded-2xl p-6 transition-all duration-300">
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">DİSK ALANI</p>
             <div class="flex items-baseline space-x-2">
-                <h3 class="text-3xl font-bold text-white"><?php echo $disk['percent']; ?>%</h3>
-                <p class="text-slate-500 text-sm"><?php echo $disk['used']; ?>/<?php echo $disk['total']; ?> GB</p>
+                <h3 class="text-3xl font-bold text-white" id="disk-val"><?php echo $disk['percent']; ?>%</h3>
+                <p class="text-slate-500 text-sm" id="disk-detail"><?php echo $disk['used']; ?>/<?php echo $disk['total']; ?> GB</p>
             </div>
             <div class="mt-4 h-2 bg-slate-900 rounded-full overflow-hidden">
-                <div class="h-full bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]" style="width: <?php echo $disk['percent']; ?>%"></div>
+                <div class="h-full bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6] transition-all duration-500" id="disk-bar" style="width: <?php echo $disk['percent']; ?>%"></div>
             </div>
         </div>
 
         <div class="cyber-card rounded-2xl p-6 transition-all duration-300">
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">SİSTEM YÜKÜ</p>
-            <h3 class="text-3xl font-bold text-white"><?php echo $load; ?></h3>
+            <h3 class="text-3xl font-bold text-white" id="load-val"><?php echo $load; ?></h3>
             <p class="text-slate-500 text-sm mt-1">1, 5, 15 dk ortalama</p>
         </div>
 
@@ -248,10 +252,10 @@ include 'includes/header.php';
     const resourceChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30', '13:45', '14:00'],
+            labels: ['-8m', '-7m', '-6m', '-5m', '-4m', '-3m', '-2m', '-1m', 'Şimdi'],
             datasets: [{
                 label: 'RAM %',
-                data: [20, 25, 22, 30, 28, 35, 32, <?php echo $mem['percent']; ?>, <?php echo $mem['percent']; ?>],
+                data: [0, 0, 0, 0, 0, 0, 0, 0, <?php echo $mem['percent']; ?>],
                 borderColor: '#22d3ee',
                 backgroundColor: 'rgba(34, 211, 238, 0.1)',
                 borderWidth: 3,
@@ -261,7 +265,7 @@ include 'includes/header.php';
                 pointRadius: 4
             }, {
                 label: 'Disk %',
-                data: [45, 45, 45, 45, 45, 45, 45, 45, <?php echo $disk['percent']; ?>],
+                data: [0, 0, 0, 0, 0, 0, 0, 0, <?php echo $disk['percent']; ?>],
                 borderColor: '#3b82f6',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 borderWidth: 3,
@@ -283,6 +287,44 @@ include 'includes/header.php';
             }
         }
     });
+
+    function updateStats() {
+        const icon = document.getElementById('refresh-icon');
+        icon.classList.add('fa-spin');
+        
+        const formData = new FormData();
+        formData.append('action', 'get_stats');
+
+        fetch('api.php', { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(res => {
+            if(res.status === 'success') {
+                const data = res.data;
+                // Update Numeric Values
+                document.getElementById('ram-val').innerText = data.ram_percent + '%';
+                document.getElementById('ram-detail').innerText = data.ram_used + '/' + data.ram_total + ' MB';
+                document.getElementById('ram-bar').style.width = data.ram_percent + '%';
+                
+                document.getElementById('disk-val').innerText = data.disk_percent + '%';
+                document.getElementById('disk-detail').innerText = data.disk_used + '/' + data.disk_total + ' GB';
+                document.getElementById('disk-bar').style.width = data.disk_percent + '%';
+                
+                document.getElementById('load-val').innerText = data.load;
+
+                // Update Chart
+                resourceChart.data.datasets[0].data.shift();
+                resourceChart.data.datasets[0].data.push(data.ram_percent);
+                resourceChart.data.datasets[1].data.shift();
+                resourceChart.data.datasets[1].data.push(data.disk_percent);
+                resourceChart.chart.update();
+            }
+            setTimeout(() => icon.classList.remove('fa-spin'), 500);
+        })
+        .catch(err => {
+            console.error(err);
+            icon.classList.remove('fa-spin');
+        });
+    }
 
     // Command Runner
     function runCommand(cmd) {
