@@ -164,7 +164,7 @@ cPanel File Manager'dan sağ tıklayıp "Change Permissions" > 777 seç.
    ```apache
    AuthType Basic
    AuthName "Admin Area"
-   AuthUserFile /home/username/.htpasswd
+   AuthUserFile /home/kesiciog/.htpasswd
    Require valid-user
    ```
 
