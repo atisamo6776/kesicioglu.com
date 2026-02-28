@@ -85,7 +85,6 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                     <?php foreach ($menuItems as $item): ?>
                     <li><a href="<?php echo htmlspecialchars($item['menu_link']); ?>" class="nav-link"><?php echo htmlspecialchars($item['menu_text']); ?></a></li>
                     <?php endforeach; ?>
-                    <li><a href="apps.php" class="nav-link">Web Apps</a></li>
                 </ul>
                 <div class="nav-icons">
                     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
@@ -358,7 +357,6 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                     <?php foreach ($menuItems as $item): ?>
                     <a href="<?php echo htmlspecialchars($item['menu_link']); ?>"><?php echo htmlspecialchars($item['menu_text']); ?></a>
                     <?php endforeach; ?>
-                    <a href="apps.php">Web Apps</a>
                 </div>
                 <div class="footer-social">
                     <?php foreach ($socialLinks as $link): ?>

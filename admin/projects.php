@@ -115,6 +115,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_project'])) {
 
                 // ZIP dosyasını güvenli şekilde aç
                 app_extract_zip_safely($_FILES['webapp_files']['tmp_name'], $projectDir);
+                
+                // Tek bir klasör mü çıktı kontrol et ve taşı
+                $files = scandir($projectDir);
+                $files = array_diff($files, ['.', '..']);
+                if (count($files) === 1 && is_dir($projectDir . '/' . reset($files))) {
+                    $singleDir = $projectDir . '/' . reset($files);
+                    foreach (scandir($singleDir) as $item) {
+                        if ($item === '.' || $item === '..') continue;
+                        rename($singleDir . '/' . $item, $projectDir . '/' . $item);
+                    }
+                    rmdir($singleDir);
+                }
+                
                 $folder_path = 'apps/' . $folder_name;
             } elseif (!empty($folder_name) && isset($_POST['id'])) {
                 // Güncelleme ama ZIP yok - mevcut folder_path'i koru
