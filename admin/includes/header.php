@@ -26,6 +26,10 @@ if (!isLoggedIn()) {
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
+                <a href="jarvis-panel/index.php" class="nav-item <?php echo strpos($_SERVER['PHP_SELF'], 'jarvis-panel') !== false ? 'active' : ''; ?>" style="border-left: 3px solid #38bdf8; background: rgba(56, 189, 248, 0.05);">
+                    <i class="fas fa-microchip" style="color: #38bdf8;"></i>
+                    <span style="color: #38bdf8; font-weight: bold;">Jarvis Control</span>
+                </a>
                 <a href="settings.php" class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>">
                     <i class="fas fa-cog"></i>
                     <span>Site Ayarları</span>
