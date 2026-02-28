@@ -15,34 +15,53 @@ function get_server_load() {
 }
 
 function get_memory_usage() {
+    if (!function_exists('shell_exec')) {
+        return [
+            'total' => 'N/A',
+            'used' => 'N/A',
+            'free' => 'N/A',
+            'percent' => 0,
+            'restricted' => true
+        ];
+    }
     $free = shell_exec('free -m');
     $free = (string)trim($free);
     $free_arr = explode("\n", $free);
+    if (!isset($free_arr[1])) return ['percent' => 0, 'total' => 0, 'used' => 0, 'free' => 0];
     $mem = explode(" ", preg_replace('/\s+/', ' ', $free_arr[1]));
     $mem_usage = round(($mem[2] / $mem[1]) * 100, 2);
     return [
         'total' => $mem[1],
         'used' => $mem[2],
         'free' => $mem[3],
-        'percent' => $mem_usage
+        'percent' => $mem_usage,
+        'restricted' => false
     ];
 }
 
 function get_disk_usage() {
-    $disktotal = disk_total_space("/");
-    $diskfree = disk_free_space("/");
-    $used = $disktotal - $diskfree;
-    return [
-        'total' => round($disktotal / 1073741824, 2),
-        'used' => round($used / 1073741824, 2),
-        'percent' => round(($used / $disktotal) * 100, 2)
-    ];
+    try {
+        $disktotal = @disk_total_space("/");
+        $diskfree = @disk_free_space("/");
+        if ($disktotal === false || $diskfree === false) {
+             return ['total' => 'N/A', 'used' => 'N/A', 'percent' => 0, 'restricted' => true];
+        }
+        $used = $disktotal - $diskfree;
+        return [
+            'total' => round($disktotal / 1073741824, 2),
+            'used' => round($used / 1073741824, 2),
+            'percent' => round(($used / $disktotal) * 100, 2),
+            'restricted' => false
+        ];
+    } catch (Exception $e) {
+        return ['total' => 'N/A', 'used' => 'N/A', 'percent' => 0, 'restricted' => true];
+    }
 }
 
 $mem = get_memory_usage();
 $disk = get_disk_usage();
-$load = get_server_load();
-$uptime = shell_exec('uptime -p');
+$load = function_exists('sys_getloadavg') ? get_server_load() : 'N/A';
+$uptime = function_exists('shell_exec') ? shell_exec('uptime -p') : 'N/A';
 
 include 'includes/header.php';
 ?>
@@ -50,6 +69,11 @@ include 'includes/header.php';
 <div class="jarvis-header">
     <h1><i class="fas fa-microchip"></i> Jarvis Control Center</h1>
     <p>Sistem Durumu ve Sunucu Yönetimi</p>
+    <?php if ($mem['restricted']): ?>
+        <div style="background: rgba(248, 113, 113, 0.1); border: 1px solid #f87171; color: #f87171; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 0.85rem;">
+            <i class="fas fa-exclamation-triangle"></i> <strong>Uyarı:</strong> Bu hosting hesabında <code>shell_exec()</code> fonksiyonu güvenlik nedeniyle devre dışı bırakılmış. Bazı sunucu verileri gösterilemiyor.
+        </div>
+    <?php endif; ?>
 </div>
 
 <div class="stats-grid">
