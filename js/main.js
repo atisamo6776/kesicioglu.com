@@ -230,7 +230,7 @@ contactForm.addEventListener('submit', async (e) => {
     
     // Disable button and show loading state
     button.disabled = true;
-    buttonText.textContent = 'Gönderiliyor...';
+    buttonText.textContent = 'Sending...';
     
     try {
         const response = await fetch('api/contact.php', {
@@ -247,7 +247,7 @@ contactForm.addEventListener('submit', async (e) => {
             showNotification(data.message, 'error');
         }
     } catch (error) {
-        showNotification('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+        showNotification('An error occurred. Please try again.', 'error');
     } finally {
         button.disabled = false;
         buttonText.textContent = originalText;
@@ -383,5 +383,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('🚀 Portfolio sitesi yüklendi!');
-console.log('💼 Kesicioğlu - Bilgisayar Mühendisi');
+console.log('🚀 Portfolio site loaded!');
+console.log('💼 Kesicioğlu - Computer Engineer');

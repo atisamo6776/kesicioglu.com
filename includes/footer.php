@@ -4,7 +4,7 @@
             <div class="footer-content">
                 <div class="footer-left">
                     <a href="<?php echo $siteUrl; ?>" class="footer-logo"><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?><span class="dot">.</span></a>
-                    <p><?php echo htmlspecialchars($settings['footer_text'] ?? 'Bilgisayar Mühendisi • Web Developer'); ?></p>
+                    <p><?php echo htmlspecialchars($settings['footer_text'] ?? 'Computer Engineer • Web Developer'); ?></p>
                 </div>
                 <div class="footer-links">
                     <?php foreach ($menuItems as $item): ?>
@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?>. Tüm hakları saklıdır.</p>
+                <p>&copy; <?php echo date('Y'); ?> <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?>. All rights reserved.</p>
             </div>
         </div>
     </footer>

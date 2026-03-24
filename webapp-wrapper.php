@@ -52,14 +52,14 @@ $socialLinks = $pdo->query("SELECT * FROM social_links WHERE is_active = 1 ORDER
 $menuItems = $pdo->query("SELECT * FROM navigation_menu WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
 
 $siteTitle = $settings['site_title'] ?? 'Kesicioğlu';
-$siteSubtitle = $settings['site_subtitle'] ?? 'Bilgisayar Mühendisi';
+$siteSubtitle = $settings['site_subtitle'] ?? 'Computer Engineer';
 $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
 
 // iframe URL
 $iframeUrl = 'apps/' . $projectSlug . '/' . $indexFile;
 ?>
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,7 +104,7 @@ $iframeUrl = 'apps/' . $projectSlug . '/' . $indexFile;
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loading-overlay" style="top: 80px;">
         <div class="spinner"></div>
-        <p>Uygulama yükleniyor...</p>
+        <p>Loading application...</p>
     </div>
 
     <!-- Main Content - iframe -->

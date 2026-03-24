@@ -31,7 +31,7 @@ if (!empty($honeypot)) {
     sleep(2); // Bot'u yanıltmak için gecikme
     echo json_encode([
         'success' => true,
-        'message' => 'Mesajınız başarıyla gönderildi!' // Fake success
+        'message' => 'Your message has been sent successfully!' // Fake success
     ]);
     
     // IP'yi engelle
@@ -50,7 +50,7 @@ if ($timeDiff < 3) {
     // 3 saniyeden hızlı gönderim - muhtemelen bot
     echo json_encode([
         'success' => false,
-        'message' => 'Lütfen formu doldurduktan sonra gönderin.'
+        'message' => 'Please submit the form after filling it out.'
     ]);
     exit;
 }
@@ -63,12 +63,12 @@ $message = sanitize($_POST['message'] ?? '');
 
 // Validation
 if (empty($name) || empty($email) || empty($subject) || empty($message)) {
-    echo json_encode(['success' => false, 'message' => 'Lütfen tüm alanları doldurun!']);
+    echo json_encode(['success' => false, 'message' => 'Please fill in all fields!']);
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(['success' => false, 'message' => 'Geçerli bir e-posta adresi girin!']);
+    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address!']);
     exit;
 }
 
@@ -82,15 +82,15 @@ try {
     $notificationEmail = getSetting('notification_email', '');
     
     if ($emailNotifications == '1' && !empty($notificationEmail)) {
-        $emailSubject = "Yeni İletişim Mesajı: " . $subject;
+        $emailSubject = "New Contact Message: " . $subject;
         $emailBody = "
-        Yeni bir iletişim mesajı aldınız!\n\n
-        Gönderen: $name\n
-        E-posta: $email\n
-        Konu: $subject\n\n
-        Mesaj:\n$message\n\n
+        You have received a new contact message!\n\n
+        Sender: $name\n
+        Email: $email\n
+        Subject: $subject\n\n
+        Message:\n$message\n\n
         ---\n
-        Bu mesaj kesicioglu.com sitesinden gönderildi.
+        This message was sent from kesicioglu.com.
         ";
         
         $headers = "From: noreply@kesicioglu.com\r\n";
@@ -100,7 +100,7 @@ try {
         @mail($notificationEmail, $emailSubject, $emailBody, $headers);
     }
     
-    echo json_encode(['success' => true, 'message' => 'Mesajınız başarıyla gönderildi!']);
+    echo json_encode(['success' => true, 'message' => 'Your message has been sent successfully!']);
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Bir hata oluştu. Lütfen tekrar deneyin.']);
+    echo json_encode(['success' => false, 'message' => 'An error occurred. Please try again.']);
 }

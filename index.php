@@ -21,18 +21,18 @@ $skills = $pdo->query("SELECT * FROM skills WHERE is_active = 1 ORDER BY display
 $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
 ?>
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php
         $siteTitle = $settings['site_title'] ?? 'Kesicioğlu';
-        $siteSubtitle = $settings['site_subtitle'] ?? 'Bilgisayar Mühendisi';
+        $siteSubtitle = $settings['site_subtitle'] ?? 'Computer Engineer';
         $fullTitle = $siteTitle . ' - ' . $siteSubtitle;
         $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
         $canonical = $siteUrl ? ($siteUrl . '/') : '';
         $ogImage = !empty($settings['hero_image']) ? ($siteUrl ? $siteUrl . '/' . ltrim($settings['hero_image'], '/') : $settings['hero_image']) : '';
-        $metaDesc = $settings['hero_description'] ?? 'Bilgisayar Mühendisi - Portfolyo & Projeler';
+        $metaDesc = $settings['hero_description'] ?? 'Computer Engineer - Portfolio & Projects';
     ?>
     <meta name="description" content="<?php echo htmlspecialchars($metaDesc); ?>">
     <title><?php echo htmlspecialchars($fullTitle); ?></title>
@@ -106,15 +106,15 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 class="hero-title">
-                        <?php echo nl2br(htmlspecialchars($settings['hero_title'] ?? 'Merhaba, Ben Kesicioğlu')); ?>
+                        <?php echo nl2br(htmlspecialchars($settings['hero_title'] ?? 'Hello, I am Kesicioğlu')); ?>
                     </h1>
-                    <h2 class="hero-subtitle"><?php echo htmlspecialchars($settings['hero_subtitle'] ?? 'Bilgisayar Mühendisi'); ?></h2>
+                    <h2 class="hero-subtitle"><?php echo htmlspecialchars($settings['hero_subtitle'] ?? 'Computer Engineer'); ?></h2>
                     <p class="hero-description">
                         <?php echo nl2br(htmlspecialchars($settings['hero_description'] ?? '')); ?>
                     </p>
                     <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">Projeleri Gör</a>
-                        <a href="#contact" class="btn btn-secondary">İletişime Geç</a>
+                        <a href="#projects" class="btn btn-primary">View Projects</a>
+                        <a href="#contact" class="btn btn-secondary">Get in Touch</a>
                     </div>
                     <div class="social-links">
                         <?php foreach ($socialLinks as $link): ?>
@@ -148,8 +148,8 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
     <section id="about" class="about">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Kim Olduğumu Keşfet</span>
-                <h2 class="section-title">Hakkımda</h2>
+                <span class="section-tag">Discover Who I Am</span>
+                <h2 class="section-title">About Me</h2>
             </div>
             <div class="about-content">
                 <div class="about-text">
@@ -158,15 +158,15 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                     <div class="about-stats">
                         <div class="stat-item">
                             <h3 class="stat-number" data-target="<?php echo $settings['stat_projects'] ?? 15; ?>">0</h3>
-                            <p class="stat-label">Tamamlanan Proje</p>
+                            <p class="stat-label">Completed Projects</p>
                         </div>
                         <div class="stat-item">
                             <h3 class="stat-number" data-target="<?php echo $settings['stat_experience'] ?? 3; ?>">0</h3>
-                            <p class="stat-label">Yıllık Deneyim</p>
+                            <p class="stat-label">Years of Experience</p>
                         </div>
                         <div class="stat-item">
                             <h3 class="stat-number" data-target="<?php echo $settings['stat_clients'] ?? 20; ?>">0</h3>
-                            <p class="stat-label">Mutlu Müşteri</p>
+                            <p class="stat-label">Happy Clients</p>
                         </div>
                     </div>
                 </div>
@@ -178,8 +178,8 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
     <section id="skills" class="skills">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Uzmanlık Alanlarım</span>
-                <h2 class="section-title">Yetenekler</h2>
+                <span class="section-tag">Areas of Expertise</span>
+                <h2 class="section-title">Skills</h2>
             </div>
             <div class="skills-grid">
                 <?php foreach ($skills as $skill): ?>
@@ -211,14 +211,14 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
     <section id="projects" class="projects">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Çalışmalarım</span>
-                <h2 class="section-title">Projeler</h2>
+                <span class="section-tag">My Work</span>
+                <h2 class="section-title">Projects</h2>
             </div>
             <div class="projects-filter">
-                <button class="filter-btn active" data-filter="all">Tümü</button>
+                <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="web">Web</button>
-                <button class="filter-btn" data-filter="mobile">Mobil</button>
-                <button class="filter-btn" data-filter="design">Tasarım</button>
+                <button class="filter-btn" data-filter="mobile">Mobile</button>
+                <button class="filter-btn" data-filter="design">Design</button>
             </div>
             <div class="projects-grid" id="projects-grid">
                 <?php foreach ($projects as $project): ?>
@@ -233,13 +233,13 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                             <?php if ($project['project_type'] === 'webapp'): ?>
                                 <?php if (!empty($project['demo_url'])): ?>
                                 <!-- Harici URL -->
-                                <a href="<?php echo htmlspecialchars($project['demo_url']); ?>" target="_blank" class="project-link" title="Harici Siteyi Aç"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="<?php echo htmlspecialchars($project['demo_url']); ?>" target="_blank" class="project-link" title="Open External Website"><i class="fas fa-external-link-alt"></i></a>
                                 <?php elseif (!empty($project['folder_path'])): ?>
                                 <!-- Lokal Web App - Wrapper ile aç -->
                                 <?php 
                                 $folderName = str_replace('apps/', '', $project['folder_path']);
                                 ?>
-                                <a href="webapp-wrapper.php?project=<?php echo urlencode($folderName); ?>" class="project-link" title="Web App'i Aç"><i class="fas fa-rocket"></i></a>
+                                <a href="webapp-wrapper.php?project=<?php echo urlencode($folderName); ?>" class="project-link" title="Open Web App"><i class="fas fa-rocket"></i></a>
                                 <?php endif; ?>
                             <?php elseif (!empty($project['demo_url'])): ?>
                             <a href="<?php echo htmlspecialchars($project['demo_url']); ?>" target="_blank" class="project-link"><i class="fas fa-eye"></i></a>
@@ -277,15 +277,15 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
     <section id="contact" class="contact">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Benimle İletişime Geç</span>
-                <h2 class="section-title">İletişim</h2>
+                <span class="section-tag">Get in Touch with Me</span>
+                <h2 class="section-title">Contact</h2>
             </div>
             <div class="contact-content">
                 <div class="contact-info">
-                    <h3>Birlikte Çalışalım</h3>
+                    <h3>Let's Work Together</h3>
                     <p>
-                        Yeni projeler ve iş birliği fırsatları için her zaman açığım. 
-                        Aklınızda bir proje mi var? Hadi konuşalım!
+                        I am always open to new projects and collaboration opportunities.
+                        Have a project in mind? Let's talk!
                     </p>
                     <div class="contact-items">
                         <div class="contact-item">
@@ -302,7 +302,7 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                                 <i class="fas fa-phone"></i>
                             </div>
                             <div class="contact-text">
-                                <h4>Telefon</h4>
+                                <h4>Phone</h4>
                                 <p><?php echo htmlspecialchars($settings['contact_phone'] ?? '+90 555 555 55 55'); ?></p>
                             </div>
                         </div>
@@ -311,8 +311,8 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
                             <div class="contact-text">
-                                <h4>Konum</h4>
-                                <p><?php echo htmlspecialchars($settings['contact_location'] ?? 'İstanbul, Türkiye'); ?></p>
+                                <h4>Location</h4>
+                                <p><?php echo htmlspecialchars($settings['contact_location'] ?? 'Istanbul, Turkey'); ?></p>
                             </div>
                         </div>
                     </div>
@@ -325,19 +325,19 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                     <input type="hidden" name="form_time" id="form_time" value="">
                     
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Adınız" required>
+                        <input type="text" name="name" placeholder="Your Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Email Adresiniz" required>
+                        <input type="email" name="email" placeholder="Your Email Address" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="subject" placeholder="Konu" required>
+                        <input type="text" name="subject" placeholder="Subject" required>
                     </div>
                     <div class="form-group">
-                        <textarea name="message" rows="5" placeholder="Mesajınız" required></textarea>
+                        <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">
-                        <span>Mesaj Gönder</span>
+                        <span>Send Message</span>
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </form>
@@ -351,7 +351,7 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
             <div class="footer-content">
                 <div class="footer-left">
                     <a href="#" class="footer-logo"><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?><span class="dot">.</span></a>
-                    <p><?php echo htmlspecialchars($settings['footer_text'] ?? 'Bilgisayar Mühendisi • Web Developer'); ?></p>
+                    <p><?php echo htmlspecialchars($settings['footer_text'] ?? 'Computer Engineer • Web Developer'); ?></p>
                 </div>
                 <div class="footer-links">
                     <?php foreach ($menuItems as $item): ?>
@@ -367,7 +367,7 @@ $projects = $pdo->query("SELECT * FROM projects WHERE is_active = 1 ORDER BY dis
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?>. Tüm hakları saklıdır.</p>
+                <p>&copy; <?php echo date('Y'); ?> <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?>. All rights reserved.</p>
             </div>
         </div>
     </footer>

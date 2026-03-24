@@ -26,11 +26,11 @@ if ($selectedCategory !== 'all') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Web Uygulamaları - İnteraktif projeler ve araçlar">
+    <meta name="description" content="Web Applications - Interactive projects and tools">
     <title>Web Apps - <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?></title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -54,12 +54,12 @@ if ($selectedCategory !== 'all') {
             <div class="nav-wrapper">
                 <a href="index.php" class="logo"><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?><span class="dot">.</span></a>
                 <ul class="nav-menu" id="nav-menu">
-                    <li><a href="index.php#home" class="nav-link">Ana Sayfa</a></li>
-                    <li><a href="index.php#about" class="nav-link">Hakkımda</a></li>
-                    <li><a href="index.php#projects" class="nav-link">Projeler</a></li>
+                    <li><a href="index.php#home" class="nav-link">Home</a></li>
+                    <li><a href="index.php#about" class="nav-link">About</a></li>
+                    <li><a href="index.php#projects" class="nav-link">Projects</a></li>
                     <li><a href="apps.php" class="nav-link active">Web Apps</a></li>
-                    <li><a href="index.php#skills" class="nav-link">Yetenekler</a></li>
-                    <li><a href="index.php#contact" class="nav-link">İletişim</a></li>
+                    <li><a href="index.php#skills" class="nav-link">Skills</a></li>
+                    <li><a href="index.php#contact" class="nav-link">Contact</a></li>
                 </ul>
                 <div class="nav-icons">
                     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
@@ -79,10 +79,10 @@ if ($selectedCategory !== 'all') {
     <section class="projects" style="padding-top: 120px; min-height: 100vh;">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">İnteraktif Uygulamalar</span>
+                <span class="section-tag">Interactive Applications</span>
                 <h2 class="section-title">Web Apps</h2>
                 <p style="text-align: center; color: var(--text-secondary); max-width: 600px; margin: 16px auto 0;">
-                    Tarayıcınızda çalışan kullanışlı araçlar ve uygulamalar. Hepsini ücretsiz kullanabilirsiniz.
+                    Useful tools and applications running in your browser. You can use all of them for free.
                 </p>
             </div>
             
@@ -92,12 +92,12 @@ if ($selectedCategory !== 'all') {
                 <div style="font-size: 80px; color: var(--text-tertiary); margin-bottom: 24px;">
                     <i class="fas fa-code"></i>
                 </div>
-                <h3 style="color: var(--text-primary); margin-bottom: 12px;">Henüz Web App Eklenmedi</h3>
+                <h3 style="color: var(--text-primary); margin-bottom: 12px;">No Web Apps Added Yet</h3>
                 <p style="color: var(--text-secondary); margin-bottom: 32px;">
-                    Yakında burada kullanışlı web uygulamaları bulabileceksiniz.
+                    Useful web applications will be available here soon.
                 </p>
                 <a href="index.php" class="btn btn-primary">
-                    <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
+                    <i class="fas fa-arrow-left"></i> Back to Home
                 </a>
             </div>
             <?php else: ?>
@@ -127,7 +127,7 @@ if ($selectedCategory !== 'all') {
                         </div>
                         <?php endif; ?>
                         <div class="project-overlay">
-                            <a href="<?php echo htmlspecialchars($appUrl); ?>" <?php echo isset($isExternal) && $isExternal ? 'target="_blank"' : ''; ?> class="project-link" title="<?php echo isset($isExternal) && $isExternal ? 'Harici Siteyi Aç' : 'Uygulamayı Aç'; ?>">
+                            <a href="<?php echo htmlspecialchars($appUrl); ?>" <?php echo isset($isExternal) && $isExternal ? 'target="_blank"' : ''; ?> class="project-link" title="<?php echo isset($isExternal) && $isExternal ? 'Open External Website' : 'Open Application'; ?>">
                                 <i class="fas fa-<?php echo isset($isExternal) && $isExternal ? 'external-link-alt' : 'rocket'; ?>"></i>
                             </a>
                             <?php if (!empty($app['github_url'])): ?>
@@ -169,7 +169,7 @@ if ($selectedCategory !== 'all') {
                         <div style="margin-top: 20px;">
                             <a href="<?php echo htmlspecialchars($appUrl); ?>" <?php echo isset($isExternal) && $isExternal ? 'target="_blank"' : ''; ?> class="btn btn-primary" style="width: 100%; justify-content: center;">
                                 <i class="fas fa-<?php echo isset($isExternal) && $isExternal ? 'external-link-alt' : 'rocket'; ?>"></i> 
-                                <?php echo isset($isExternal) && $isExternal ? 'Siteye Git' : 'Uygulamayı Aç'; ?>
+                                <?php echo isset($isExternal) && $isExternal ? 'Visit Website' : 'Open Application'; ?>
                             </a>
                         </div>
                     </div>
@@ -186,14 +186,14 @@ if ($selectedCategory !== 'all') {
             <div class="footer-content">
                 <div class="footer-left">
                     <a href="index.php" class="footer-logo"><?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?><span class="dot">.</span></a>
-                    <p><?php echo htmlspecialchars($settings['footer_text'] ?? 'Bilgisayar Mühendisi • Web Developer'); ?></p>
+                    <p><?php echo htmlspecialchars($settings['footer_text'] ?? 'Computer Engineer • Web Developer'); ?></p>
                 </div>
                 <div class="footer-links">
-                    <a href="index.php#home">Ana Sayfa</a>
-                    <a href="index.php#about">Hakkımda</a>
-                    <a href="index.php#projects">Projeler</a>
+                    <a href="index.php#home">Home</a>
+                    <a href="index.php#about">About</a>
+                    <a href="index.php#projects">Projects</a>
                     <a href="apps.php">Web Apps</a>
-                    <a href="index.php#contact">İletişim</a>
+                    <a href="index.php#contact">Contact</a>
                 </div>
                 <div class="footer-social">
                     <?php foreach ($socialLinks as $link): ?>
@@ -204,7 +204,7 @@ if ($selectedCategory !== 'all') {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?>. Tüm hakları saklıdır.</p>
+                <p>&copy; <?php echo date('Y'); ?> <?php echo $settings['site_title'] ?? 'Kesicioğlu'; ?>. All rights reserved.</p>
             </div>
         </div>
     </footer>
